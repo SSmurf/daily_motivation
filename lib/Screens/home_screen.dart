@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:feather_icons/feather_icons.dart';
 import '../providers/quote_provider.dart';
-import '../Widgets/quote_display.dart';
+import '../widgets/quote_display.dart';
+import '../utils/constants.dart';
 import 'settings_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -16,7 +18,7 @@ class HomeScreen extends ConsumerWidget {
         title: const Text('Daily Motivation'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.settings),
+            icon: const Icon(FeatherIcons.settings),
             onPressed: () {
               Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
             },
@@ -25,7 +27,7 @@ class HomeScreen extends ConsumerWidget {
       ),
       body: Center(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(AppConstants.largeSpacing),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -36,10 +38,10 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   ref.read(quoteProvider.notifier).fetchQuote();
                 },
-                icon: const Icon(Icons.refresh),
+                icon: const Icon(FeatherIcons.refreshCw),
                 label: const Text('New Quote'),
               ),
-              const SizedBox(height: 40),
+              const SizedBox(height: AppConstants.extraLargeSpacing),
             ],
           ),
         ),

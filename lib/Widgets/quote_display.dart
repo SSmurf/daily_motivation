@@ -1,7 +1,8 @@
-// widgets/quote_display.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:feather_icons/feather_icons.dart';
 import '../models/quote.dart';
+import '../utils/constants.dart';
 
 class QuoteDisplay extends StatelessWidget {
   final AsyncValue<Quote> quoteState;
@@ -18,29 +19,37 @@ class QuoteDisplay extends StatelessWidget {
   }
 
   Widget _buildQuote(BuildContext context, Quote quote) {
+    final theme = Theme.of(context);
+
     return Card(
       elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: AppConstants.mediumBorderRadius),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(AppConstants.largeSpacing),
         child: Column(
           children: [
-            Text(
-              '"${quote.text}"',
-              style: Theme.of(context).textTheme.headlineSmall,
-              textAlign: TextAlign.center,
+            Icon(
+              FeatherIcons.messageCircle,
+              size: 40,
+              color: theme.colorScheme.primary.withValues(alpha: 0.5),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppConstants.mediumSpacing),
+            Text('"${quote.text}"', style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
+            const SizedBox(height: AppConstants.largeSpacing),
             Text(
               '— ${quote.author}',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontStyle: FontStyle.italic),
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontStyle: FontStyle.italic,
+                color: theme.colorScheme.secondary,
+              ),
               textAlign: TextAlign.right,
             ),
             if (quote.category != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppConstants.smallSpacing),
               Chip(
                 label: Text(quote.category!),
-                backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+                backgroundColor: theme.colorScheme.primaryContainer,
+                labelStyle: TextStyle(color: theme.colorScheme.onPrimaryContainer),
               ),
             ],
           ],
@@ -50,14 +59,27 @@ class QuoteDisplay extends StatelessWidget {
   }
 
   Widget _buildError(BuildContext context, Object error) {
-    return Column(
-      children: [
-        const Icon(Icons.error_outline, color: Colors.red, size: 60),
-        const SizedBox(height: 16),
-        Text('Failed to load quote', style: Theme.of(context).textTheme.titleLarge),
-        const SizedBox(height: 8),
-        Text(error.toString(), style: Theme.of(context).textTheme.bodyMedium, textAlign: TextAlign.center),
-      ],
+    final theme = Theme.of(context);
+
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: AppConstants.mediumBorderRadius),
+      child: Padding(
+        padding: const EdgeInsets.all(AppConstants.largeSpacing),
+        child: Column(
+          children: [
+            Icon(FeatherIcons.alertCircle, color: theme.colorScheme.error, size: 60),
+            const SizedBox(height: AppConstants.mediumSpacing),
+            Text('Failed to load quote', style: theme.textTheme.titleLarge),
+            const SizedBox(height: AppConstants.smallSpacing),
+            Text(
+              'Try refreshing or check your connection',
+              style: theme.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

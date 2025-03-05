@@ -1,6 +1,6 @@
-// screens/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:feather_icons/feather_icons.dart';
 import '../providers/settings_provider.dart';
 import '../models/settings.dart';
 
@@ -12,32 +12,45 @@ class SettingsScreen extends ConsumerWidget {
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Settings')),
+      appBar: AppBar(
+        title: const Text('Settings'),
+        leading: IconButton(
+          icon: const Icon(FeatherIcons.arrowLeft),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
       body: ListView(
         children: [
-          SwitchListTile(
+          ListTile(
+            leading: const Icon(FeatherIcons.moon),
             title: const Text('Dark Mode'),
             subtitle: const Text('Toggle dark theme'),
-            value: settings.darkMode,
-            onChanged: (value) {
-              ref.read(settingsProvider.notifier).toggleDarkMode();
-            },
+            trailing: Switch(
+              value: settings.darkMode,
+              onChanged: (value) {
+                ref.read(settingsProvider.notifier).toggleDarkMode();
+              },
+            ),
           ),
           const Divider(),
           ListTile(
+            leading: const Icon(FeatherIcons.tag),
             title: const Text('Quote Category'),
             subtitle: Text(_getCategoryName(settings.quoteCategory)),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
             onTap: () => _showCategoryPicker(context, ref, settings),
           ),
           const Divider(),
-          SwitchListTile(
+          ListTile(
+            leading: const Icon(FeatherIcons.bell),
             title: const Text('Daily Notifications'),
             subtitle: const Text('Get a quote notification daily'),
-            value: settings.notificationsEnabled,
-            onChanged: (value) {
-              ref.read(settingsProvider.notifier).toggleNotifications();
-            },
+            trailing: Switch(
+              value: settings.notificationsEnabled,
+              onChanged: (value) {
+                ref.read(settingsProvider.notifier).toggleNotifications();
+              },
+            ),
           ),
         ],
       ),
@@ -62,54 +75,51 @@ class SettingsScreen extends ConsumerWidget {
   void _showCategoryPicker(BuildContext context, WidgetRef ref, Settings settings) {
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) {
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              ListTile(
-                title: const Text('Any Category'),
-                selected: settings.quoteCategory == QuoteCategory.any,
-                onTap: () {
-                  ref.read(settingsProvider.notifier).setQuoteCategory(QuoteCategory.any);
-                  Navigator.pop(context);
-                },
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text('Select Quote Category', style: Theme.of(context).textTheme.titleLarge),
               ),
-              ListTile(
-                title: const Text('Motivation'),
-                selected: settings.quoteCategory == QuoteCategory.motivation,
-                onTap: () {
-                  ref.read(settingsProvider.notifier).setQuoteCategory(QuoteCategory.motivation);
-                  Navigator.pop(context);
-                },
+              const Divider(),
+              _buildCategoryTile(context, ref, 'Any Category', QuoteCategory.any, settings.quoteCategory),
+              _buildCategoryTile(
+                context,
+                ref,
+                'Motivation',
+                QuoteCategory.motivation,
+                settings.quoteCategory,
               ),
-              ListTile(
-                title: const Text('Success'),
-                selected: settings.quoteCategory == QuoteCategory.success,
-                onTap: () {
-                  ref.read(settingsProvider.notifier).setQuoteCategory(QuoteCategory.success);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Wisdom'),
-                selected: settings.quoteCategory == QuoteCategory.wisdom,
-                onTap: () {
-                  ref.read(settingsProvider.notifier).setQuoteCategory(QuoteCategory.wisdom);
-                  Navigator.pop(context);
-                },
-              ),
-              ListTile(
-                title: const Text('Happiness'),
-                selected: settings.quoteCategory == QuoteCategory.happiness,
-                onTap: () {
-                  ref.read(settingsProvider.notifier).setQuoteCategory(QuoteCategory.happiness);
-                  Navigator.pop(context);
-                },
-              ),
+              _buildCategoryTile(context, ref, 'Success', QuoteCategory.success, settings.quoteCategory),
+              _buildCategoryTile(context, ref, 'Wisdom', QuoteCategory.wisdom, settings.quoteCategory),
+              _buildCategoryTile(context, ref, 'Happiness', QuoteCategory.happiness, settings.quoteCategory),
             ],
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildCategoryTile(
+    BuildContext context,
+    WidgetRef ref,
+    String title,
+    QuoteCategory category,
+    QuoteCategory currentCategory,
+  ) {
+    final isSelected = category == currentCategory;
+
+    return ListTile(
+      title: Text(title),
+      trailing: isSelected ? const Icon(FeatherIcons.check) : null,
+      selected: isSelected,
+      onTap: () {
+        ref.read(settingsProvider.notifier).setQuoteCategory(category);
+        Navigator.pop(context);
       },
     );
   }

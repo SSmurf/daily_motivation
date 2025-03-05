@@ -1,3 +1,5 @@
+import 'package:daily_motivation/Providers/settings_provider.dart';
+import 'package:daily_motivation/Widgets/meditation_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:feather_icons/feather_icons.dart';
@@ -14,6 +16,7 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quoteState = ref.watch(quoteProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppConstants.appName),
@@ -42,12 +45,25 @@ class HomeScreen extends ConsumerWidget {
               const Spacer(),
               QuoteDisplay(quoteState: quoteState),
               const Spacer(),
-              ElevatedButton.icon(
-                onPressed: () {
-                  ref.read(quoteProvider.notifier).fetchQuote();
-                },
-                icon: const Icon(FeatherIcons.refreshCw),
-                label: const Text('New Quote'),
+              // Bottom row with Meditate button on left and Refresh on right.
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  // Meditate button
+                  ElevatedButton.icon(
+                    onPressed: () => _startMeditation(context, ref),
+                    icon: const Icon(FeatherIcons.moon),
+                    label: const Text('Meditate'),
+                  ),
+                  // Refresh Quote button
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      ref.read(quoteProvider.notifier).fetchQuote();
+                    },
+                    icon: const Icon(FeatherIcons.refreshCw),
+                    label: const Text('New Quote'),
+                  ),
+                ],
               ),
               const SizedBox(height: AppConstants.extraLargeSpacing),
             ],
@@ -71,6 +87,18 @@ class HomeScreen extends ConsumerWidget {
     Share.share(
       textToShare,
       subject: 'Daily Motivation',
+    );
+  }
+
+  void _startMeditation(BuildContext context, WidgetRef ref) {
+    // For this example, we assume your settingsProvider contains the meditation time in seconds.
+    // If not, default to 60 seconds.
+    final meditationDuration = ref.read(settingsProvider).meditationDuration ?? 60;
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      barrierColor: Colors.black.withOpacity(0.7),
+      builder: (_) => MeditationDialog(duration: meditationDuration),
     );
   }
 }

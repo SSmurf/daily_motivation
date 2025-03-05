@@ -23,10 +23,7 @@ class HomeScreen extends ConsumerWidget {
         leading: IconButton(
           icon: const Icon(FeatherIcons.settings),
           onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            );
+            Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
           },
         ),
         actions: [
@@ -45,23 +42,25 @@ class HomeScreen extends ConsumerWidget {
               const Spacer(),
               QuoteDisplay(quoteState: quoteState),
               const Spacer(),
-              // Bottom row with Meditate button on left and Refresh on right.
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // Meditate button
-                  ElevatedButton.icon(
-                    onPressed: () => _startMeditation(context, ref),
-                    icon: const Icon(FeatherIcons.moon),
-                    label: const Text('Meditate'),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () => _startMeditation(context, ref),
+                      icon: const Icon(FeatherIcons.moon),
+                      label: Text('Meditate'),
+                    ),
                   ),
-                  // Refresh Quote button
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      ref.read(quoteProvider.notifier).fetchQuote();
-                    },
-                    icon: const Icon(FeatherIcons.refreshCw),
-                    label: const Text('New Quote'),
+                  const SizedBox(width: AppConstants.largeSpacing),
+                  Expanded(
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        ref.read(quoteProvider.notifier).fetchQuote();
+                      },
+                      icon: const Icon(FeatherIcons.refreshCw),
+                      label: Text('New Quote'),
+                    ),
                   ),
                 ],
               ),
@@ -75,19 +74,16 @@ class HomeScreen extends ConsumerWidget {
 
   void _shareQuoteText(BuildContext context, AsyncValue<Quote> quoteState) {
     if (quoteState is! AsyncData) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No quote available to share')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('No quote available to share')));
       return;
     }
 
     final quote = quoteState.value;
     final textToShare = '"${quote!.text}" — ${quote.author}';
-    
-    Share.share(
-      textToShare,
-      subject: 'Daily Motivation',
-    );
+
+    Share.share(textToShare, subject: 'Daily Motivation');
   }
 
   void _startMeditation(BuildContext context, WidgetRef ref) {

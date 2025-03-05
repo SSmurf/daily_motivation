@@ -137,6 +137,9 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       colorScheme: ColorScheme.light(
         primary: lightPrimary500,
         onPrimary: Colors.white,
@@ -154,7 +157,7 @@ class AppTheme {
         onSurface: lightText900,
         surfaceContainerHighest: lightBackground200,
         onSurfaceVariant: lightText700,
-        error: Color(0xFFB00020),
+        error: const Color(0xFFB00020),
         onError: Colors.white,
         outline: lightText300,
         outlineVariant: lightText200,
@@ -178,6 +181,7 @@ class AppTheme {
             vertical: AppConstants.mediumSpacing,
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          splashFactory: NoSplash.splashFactory,
         ),
       ),
       cardTheme: CardTheme(
@@ -195,9 +199,9 @@ class AppTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return lightPrimary500.withValues(alpha: 0.5);
+            return lightPrimary500.withAlpha(128);
           }
-          return lightText400.withValues(alpha: 0.3);
+          return lightText400.withAlpha(77);
         }),
       ),
       dialogTheme: DialogTheme(
@@ -233,6 +237,9 @@ class AppTheme {
     return ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
+      splashFactory: NoSplash.splashFactory,
+      splashColor: Colors.transparent,
+      highlightColor: Colors.transparent,
       colorScheme: ColorScheme.dark(
         primary: darkPrimary600,
         onPrimary: darkText950,
@@ -250,7 +257,7 @@ class AppTheme {
         onSurface: darkText900,
         surfaceContainerHighest: darkBackground200,
         onSurfaceVariant: darkText700,
-        error: Color(0xFFCF6679),
+        error: const Color(0xFFCF6679),
         onError: darkText950,
         outline: darkText600,
         outlineVariant: darkText700,
@@ -270,6 +277,7 @@ class AppTheme {
             vertical: AppConstants.mediumSpacing,
           ),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          splashFactory: NoSplash.splashFactory,
         ),
       ),
       cardTheme: CardTheme(
@@ -287,9 +295,9 @@ class AppTheme {
         }),
         trackColor: WidgetStateProperty.resolveWith<Color>((states) {
           if (states.contains(WidgetState.selected)) {
-            return darkPrimary600.withValues(alpha: 0.5);
+            return darkPrimary600.withAlpha(128);
           }
-          return darkText600.withValues(alpha: 0.3);
+          return darkText600.withAlpha(77);
         }),
       ),
       dialogTheme: DialogTheme(

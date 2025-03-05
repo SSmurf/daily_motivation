@@ -24,7 +24,6 @@ class QuoteNotifier extends StateNotifier<AsyncValue<Quote>> {
   }
 
   Future<void> fetchQuote() async {
-    // Set loading state only if still mounted
     if (mounted) {
       state = const AsyncValue.loading();
     }
@@ -37,12 +36,10 @@ class QuoteNotifier extends StateNotifier<AsyncValue<Quote>> {
 
       final quote = await _quoteService.getRandomQuote(category: category);
 
-      // Check if still mounted before updating state
       if (mounted) {
         state = AsyncValue.data(quote);
       }
     } catch (e, stack) {
-      // Check if still mounted before updating state
       if (mounted) {
         state = AsyncValue.error(e, stack);
         print(e);

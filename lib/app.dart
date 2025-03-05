@@ -1,4 +1,3 @@
-// app.dart
 import 'package:daily_motivation/Utils/constants.dart';
 import 'package:daily_motivation/Utils/theme.dart';
 import 'package:flutter/material.dart';

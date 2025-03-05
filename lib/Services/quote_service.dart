@@ -10,7 +10,6 @@ class QuoteService {
   late final http.Client _client;
 
   QuoteService() {
-    // Create a client that accepts all certificates
     final HttpClient httpClient =
         HttpClient()..badCertificateCallback = ((X509Certificate cert, String host, int port) => true);
     _client = IOClient(httpClient);

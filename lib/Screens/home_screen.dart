@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:feather_icons/feather_icons.dart';
+import 'package:share_plus/share_plus.dart';
+import '../models/quote.dart';
 import '../providers/quote_provider.dart';
 import '../widgets/quote_display.dart';
 import '../utils/constants.dart';
@@ -12,16 +14,22 @@ class HomeScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final quoteState = ref.watch(quoteProvider);
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daily Motivation'),
+        title: Text(AppConstants.appName),
+        leading: IconButton(
+          icon: const Icon(FeatherIcons.settings),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            );
+          },
+        ),
         actions: [
           IconButton(
-            icon: const Icon(FeatherIcons.settings),
-            onPressed: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const SettingsScreen()));
-            },
+            icon: const Icon(FeatherIcons.share),
+            onPressed: () => _shareQuoteText(context, quoteState),
           ),
         ],
       ),
@@ -38,10 +46,7 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   ref.read(quoteProvider.notifier).fetchQuote();
                 },
-                icon: const Padding(
-                  padding: EdgeInsets.only(right: AppConstants.smallSpacing),
-                  child: Icon(FeatherIcons.refreshCw),
-                ),
+                icon: const Icon(FeatherIcons.refreshCw),
                 label: const Text('New Quote'),
               ),
               const SizedBox(height: AppConstants.extraLargeSpacing),
@@ -49,6 +54,23 @@ class HomeScreen extends ConsumerWidget {
           ),
         ),
       ),
+    );
+  }
+
+  void _shareQuoteText(BuildContext context, AsyncValue<Quote> quoteState) {
+    if (quoteState is! AsyncData) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No quote available to share')),
+      );
+      return;
+    }
+
+    final quote = quoteState.value;
+    final textToShare = '"${quote!.text}" — ${quote.author}';
+    
+    Share.share(
+      textToShare,
+      subject: 'Daily Motivation',
     );
   }
 }

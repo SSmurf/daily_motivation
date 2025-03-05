@@ -133,9 +133,24 @@ class AppTheme {
   static const Color darkAccent900 = Color(0xFFDECEFD);
   static const Color darkAccent950 = Color(0xFFEFE7FE);
 
+  static TextTheme _buildTextTheme(TextTheme base) {
+    return base.copyWith(
+      headlineLarge: GoogleFonts.poppins(fontSize: 32, fontWeight: FontWeight.bold),
+      headlineMedium: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold),
+      headlineSmall: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w600),
+      titleLarge: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
+      titleMedium: GoogleFonts.poppins(fontSize: 18),
+      titleSmall: GoogleFonts.poppins(fontSize: 16),
+      bodyLarge: GoogleFonts.poppins(fontSize: 16),
+      bodyMedium: GoogleFonts.poppins(fontSize: 14),
+      bodySmall: GoogleFonts.poppins(fontSize: 12),
+      labelLarge: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold),
+    );
+  }
+
   static ThemeData lightTheme() {
-    return ThemeData(
-      useMaterial3: true,
+    final ThemeData base = ThemeData.light();
+    return base.copyWith(
       brightness: Brightness.light,
       splashFactory: NoSplash.splashFactory,
       splashColor: Colors.transparent,
@@ -168,9 +183,10 @@ class AppTheme {
         foregroundColor: lightText900,
         elevation: 0,
       ),
-      textTheme: GoogleFonts.poppinsTextTheme(
-        ThemeData.light().textTheme.apply(bodyColor: lightText900, displayColor: lightText900),
-      ),
+      textTheme: _buildTextTheme(GoogleFonts.poppinsTextTheme(base.textTheme).apply(
+        bodyColor: lightText900,
+        displayColor: lightText900,
+      )),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: lightPrimary500,
@@ -234,8 +250,8 @@ class AppTheme {
   }
 
   static ThemeData darkTheme() {
-    return ThemeData(
-      useMaterial3: true,
+    final ThemeData base = ThemeData.dark();
+    return base.copyWith(
       brightness: Brightness.dark,
       splashFactory: NoSplash.splashFactory,
       splashColor: Colors.transparent,
@@ -264,9 +280,10 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: darkBackground50,
       appBarTheme: AppBarTheme(backgroundColor: darkBackground50, foregroundColor: darkText900, elevation: 0),
-      textTheme: GoogleFonts.poppinsTextTheme(
-        ThemeData.dark().textTheme.apply(bodyColor: darkText900, displayColor: darkText900),
-      ),
+      textTheme: _buildTextTheme(GoogleFonts.poppinsTextTheme(base.textTheme).apply(
+        bodyColor: darkText900,
+        displayColor: darkText900,
+      )),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: darkPrimary600,
@@ -305,7 +322,10 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       iconTheme: IconThemeData(color: darkPrimary600),
-      chipTheme: ChipThemeData(backgroundColor: darkSecondary300, labelStyle: TextStyle(color: darkText900)),
+      chipTheme: ChipThemeData(
+        backgroundColor: darkSecondary300,
+        labelStyle: TextStyle(color: darkText900),
+      ),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: darkBackground100,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),

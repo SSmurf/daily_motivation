@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:feather_icons/feather_icons.dart';
 import '../providers/settings_provider.dart';
@@ -7,10 +8,19 @@ import '../models/settings.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  String _formatDuration(int seconds) {
+    final minutes = seconds ~/ 60;
+    final remaining = seconds % 60;
+    if (minutes > 0) {
+      return "$minutes min ${remaining}s";
+    } else {
+      return "$remaining s";
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
-
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -24,7 +34,6 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(FeatherIcons.moon),
             title: const Text('Dark Mode'),
-            subtitle: const Text('Toggle dark theme'),
             trailing: Switch(
               value: settings.darkMode,
               onChanged: (value) {
@@ -36,7 +45,6 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(FeatherIcons.tag),
             title: const Text('Quote Category'),
-            subtitle: Text(_getCategoryName(settings.quoteCategory)),
             trailing: const Icon(FeatherIcons.chevronRight, size: 20),
             onTap: () => _showCategoryPicker(context, ref, settings),
           ),
@@ -44,7 +52,6 @@ class SettingsScreen extends ConsumerWidget {
           ListTile(
             leading: const Icon(FeatherIcons.bell),
             title: const Text('Daily Notifications'),
-            subtitle: const Text('Get a quote notification daily'),
             trailing: Switch(
               value: settings.notificationsEnabled,
               onChanged: (value) {
@@ -52,24 +59,17 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(FeatherIcons.clock),
+            title: const Text('Meditation Duration'),
+            trailing: Text(_formatDuration(settings.meditationDuration ?? 60)),
+            onTap: () => _showMeditationDurationPicker(context, ref, settings),
+          ),
+          const Divider(),
         ],
       ),
     );
-  }
-
-  String _getCategoryName(QuoteCategory category) {
-    switch (category) {
-      case QuoteCategory.motivation:
-        return 'Motivation';
-      case QuoteCategory.success:
-        return 'Success';
-      case QuoteCategory.wisdom:
-        return 'Wisdom';
-      case QuoteCategory.happiness:
-        return 'Happiness';
-      case QuoteCategory.any:
-        return 'Any Category';
-    }
   }
 
   void _showCategoryPicker(BuildContext context, WidgetRef ref, Settings settings) {
@@ -112,7 +112,6 @@ class SettingsScreen extends ConsumerWidget {
     QuoteCategory currentCategory,
   ) {
     final isSelected = category == currentCategory;
-
     return ListTile(
       title: Text(title),
       trailing: isSelected ? const Icon(FeatherIcons.check) : null,
@@ -120,6 +119,108 @@ class SettingsScreen extends ConsumerWidget {
       onTap: () {
         ref.read(settingsProvider.notifier).setQuoteCategory(category);
         Navigator.pop(context);
+      },
+    );
+  }
+
+  void _showMeditationDurationPicker(BuildContext context, WidgetRef ref, Settings settings) {
+    // Convert stored duration from seconds to minutes and seconds.
+    final int currentSeconds = settings.meditationDuration ?? 60;
+    int currentMinutes = currentSeconds ~/ 60;
+    int currentRemainingSeconds = currentSeconds % 60;
+
+    // Use a large number for infinite scrolling.
+    const int infiniteItemCount = 600;
+    // Calculate initial scroll indexes in the middle of infinite list.
+    final int minutesInitialIndex = (infiniteItemCount ~/ 2) + currentMinutes;
+    final int secondsInitialIndex = (infiniteItemCount ~/ 2) + currentRemainingSeconds;
+
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return SizedBox(
+              height: 300,
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Text("Set meditation duration", style: Theme.of(context).textTheme.headlineSmall),
+                  ),
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Minutes Picker
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text("Minutes"),
+                              Expanded(
+                                child: CupertinoPicker(
+                                  scrollController: FixedExtentScrollController(
+                                    initialItem: minutesInitialIndex,
+                                  ),
+                                  itemExtent: 32,
+                                  onSelectedItemChanged: (int index) {
+                                    setState(() {
+                                      currentMinutes = index % 60;
+                                    });
+                                  },
+                                  children: List<Widget>.generate(
+                                    infiniteItemCount,
+                                    (int index) => Center(child: Text("${index % 60}")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Seconds Picker
+                        Expanded(
+                          child: Column(
+                            children: [
+                              const Text("Seconds"),
+                              Expanded(
+                                child: CupertinoPicker(
+                                  scrollController: FixedExtentScrollController(
+                                    initialItem: secondsInitialIndex,
+                                  ),
+                                  itemExtent: 32,
+                                  onSelectedItemChanged: (int index) {
+                                    setState(() {
+                                      currentRemainingSeconds = index % 60;
+                                    });
+                                  },
+                                  children: List<Widget>.generate(
+                                    infiniteItemCount,
+                                    (int index) => Center(child: Text("${index % 60}")),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {
+                      final int newDuration = currentMinutes * 60 + currentRemainingSeconds;
+                      ref
+                          .read(settingsProvider.notifier)
+                          .updateSettings(settings.copyWith(meditationDuration: newDuration));
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Save"),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            );
+          },
+        );
       },
     );
   }

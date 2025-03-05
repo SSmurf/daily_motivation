@@ -141,7 +141,7 @@ class AppTheme {
       titleLarge: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
       titleMedium: GoogleFonts.poppins(fontSize: 18),
       titleSmall: GoogleFonts.poppins(fontSize: 16),
-      bodyLarge: GoogleFonts.poppins(fontSize: 16),
+      bodyLarge: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
       bodyMedium: GoogleFonts.poppins(fontSize: 14),
       bodySmall: GoogleFonts.poppins(fontSize: 12),
       labelLarge: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold),
@@ -183,10 +183,11 @@ class AppTheme {
         foregroundColor: lightText900,
         elevation: 0,
       ),
-      textTheme: _buildTextTheme(GoogleFonts.poppinsTextTheme(base.textTheme).apply(
-        bodyColor: lightText900,
-        displayColor: lightText900,
-      )),
+      textTheme: _buildTextTheme(
+        GoogleFonts.poppinsTextTheme(
+          base.textTheme,
+        ).apply(bodyColor: lightText900, displayColor: lightText900),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: lightPrimary500,
@@ -280,10 +281,9 @@ class AppTheme {
       ),
       scaffoldBackgroundColor: darkBackground50,
       appBarTheme: AppBarTheme(backgroundColor: darkBackground50, foregroundColor: darkText900, elevation: 0),
-      textTheme: _buildTextTheme(GoogleFonts.poppinsTextTheme(base.textTheme).apply(
-        bodyColor: darkText900,
-        displayColor: darkText900,
-      )),
+      textTheme: _buildTextTheme(
+        GoogleFonts.poppinsTextTheme(base.textTheme).apply(bodyColor: darkText900, displayColor: darkText900),
+      ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: darkPrimary600,
@@ -322,10 +322,7 @@ class AppTheme {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
       iconTheme: IconThemeData(color: darkPrimary600),
-      chipTheme: ChipThemeData(
-        backgroundColor: darkSecondary300,
-        labelStyle: TextStyle(color: darkText900),
-      ),
+      chipTheme: ChipThemeData(backgroundColor: darkSecondary300, labelStyle: TextStyle(color: darkText900)),
       bottomSheetTheme: BottomSheetThemeData(
         backgroundColor: darkBackground100,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),

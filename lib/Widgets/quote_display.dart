@@ -34,7 +34,7 @@ class QuoteDisplay extends StatelessWidget {
               color: theme.colorScheme.primary.withValues(alpha: 0.5),
             ),
             const SizedBox(height: AppConstants.mediumSpacing),
-            Text('"${quote.text}"', style: theme.textTheme.headlineSmall, textAlign: TextAlign.center),
+            Text('"${quote.text}"', style: theme.textTheme.bodyLarge, textAlign: TextAlign.center),
             const SizedBox(height: AppConstants.largeSpacing),
             Text(
               '— ${quote.author}',

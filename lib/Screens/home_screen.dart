@@ -38,7 +38,10 @@ class HomeScreen extends ConsumerWidget {
                 onPressed: () {
                   ref.read(quoteProvider.notifier).fetchQuote();
                 },
-                icon: const Icon(FeatherIcons.refreshCw),
+                icon: const Padding(
+                  padding: EdgeInsets.only(right: AppConstants.smallSpacing),
+                  child: Icon(FeatherIcons.refreshCw),
+                ),
                 label: const Text('New Quote'),
               ),
               const SizedBox(height: AppConstants.extraLargeSpacing),

@@ -160,7 +160,7 @@ class AppTheme {
         onPrimary: Colors.white,
         primaryContainer: lightPrimary100,
         onPrimaryContainer: lightPrimary900,
-        secondary: lightSecondary500,
+        secondary: lightSecondary900,
         onSecondary: Colors.white,
         secondaryContainer: lightSecondary100,
         onSecondaryContainer: lightSecondary900,

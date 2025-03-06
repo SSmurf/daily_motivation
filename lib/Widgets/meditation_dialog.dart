@@ -59,7 +59,10 @@ class _MeditationDialogState extends State<MeditationDialog> {
         width: 250,
         height: 350,
         child: Container(
-          decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(16)),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: BorderRadius.circular(16),
+          ),
           padding: const EdgeInsets.symmetric(
             vertical: AppConstants.extraLargeSpacing,
             horizontal: AppConstants.mediumSpacing,
@@ -69,7 +72,9 @@ class _MeditationDialogState extends State<MeditationDialog> {
             children: [
               Text(
                 _completed ? "Well done!" : "Meditation",
-                style: Theme.of(context).textTheme.headlineSmall,
+                style: Theme.of(
+                  context,
+                ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
               ),
               const SizedBox(height: 32),
               Expanded(
@@ -80,13 +85,15 @@ class _MeditationDialogState extends State<MeditationDialog> {
                       CircularProgressIndicator(
                         value: _completed ? 1 : 1 - (_remainingSeconds / widget.duration),
                         strokeWidth: 8,
-                        backgroundColor: Colors.grey[300],
-                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                        backgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                        valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).colorScheme.primary),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         _completed ? "" : _formattedTime(),
-                        style: Theme.of(context).textTheme.headlineMedium,
+                        style: Theme.of(
+                          context,
+                        ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
                       ),
                     ],
                   ),

@@ -43,15 +43,8 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(FeatherIcons.tag),
-            title: const Text('Quote Category'),
-            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
-            onTap: () => _showCategoryPicker(context, ref, settings),
-          ),
-          const Divider(),
-          ListTile(
             leading: const Icon(FeatherIcons.bell),
-            title: const Text('Daily Notifications'),
+            title: const Text('Notifications'),
             trailing: Switch(
               value: settings.notificationsEnabled,
               onChanged: (value) {
@@ -59,11 +52,22 @@ class SettingsScreen extends ConsumerWidget {
               },
             ),
           ),
+
+          const Divider(),
+          ListTile(
+            leading: const Icon(FeatherIcons.tag),
+            title: const Text('Quote category'),
+            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
+            onTap: () => _showCategoryPicker(context, ref, settings),
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(FeatherIcons.clock),
-            title: const Text('Meditation Duration'),
-            trailing: Text(_formatDuration(settings.meditationDuration ?? 60)),
+            title: const Text('Meditation duration'),
+            trailing: Text(
+              _formatDuration(settings.meditationDuration ?? 60),
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             onTap: () => _showMeditationDurationPicker(context, ref, settings),
           ),
           const Divider(),

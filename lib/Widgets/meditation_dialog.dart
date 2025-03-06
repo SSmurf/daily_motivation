@@ -74,7 +74,7 @@ class _MeditationDialogState extends State<MeditationDialog> {
                 _completed ? "Well done!" : "Meditation",
                 style: Theme.of(
                   context,
-                ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.onPrimaryContainer),
               ),
               const SizedBox(height: 32),
               Expanded(
@@ -91,9 +91,9 @@ class _MeditationDialogState extends State<MeditationDialog> {
                       const SizedBox(height: 16),
                       Text(
                         _completed ? "" : _formattedTime(),
-                        style: Theme.of(
-                          context,
-                        ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.secondary),
+                        style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimaryContainer,
+                        ),
                       ),
                     ],
                   ),

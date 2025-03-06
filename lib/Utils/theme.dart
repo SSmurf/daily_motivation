@@ -260,8 +260,8 @@ class AppTheme {
       colorScheme: ColorScheme.dark(
         primary: darkPrimary600,
         onPrimary: darkText950,
-        primaryContainer: darkPrimary800,
-        onPrimaryContainer: darkText50,
+        primaryContainer: darkBackground100,
+        onPrimaryContainer: darkText950,
         secondary: darkSecondary600,
         onSecondary: darkText950,
         secondaryContainer: darkSecondary800,

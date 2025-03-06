@@ -24,6 +24,7 @@ class QuoteDisplay extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: AppConstants.mediumBorderRadius),
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.largeSpacing),
         child: Column(
@@ -33,14 +34,18 @@ class QuoteDisplay extends StatelessWidget {
               size: 40,
               color: theme.colorScheme.primary.withValues(alpha: 0.5),
             ),
-            const SizedBox(height: AppConstants.mediumSpacing),
-            Text('"${quote.text}"', style: theme.textTheme.bodyLarge, textAlign: TextAlign.center),
             const SizedBox(height: AppConstants.largeSpacing),
+            Text(
+              '"${quote.text}"',
+              style: theme.textTheme.bodyLarge!.copyWith(color: theme.colorScheme.onPrimaryContainer),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: AppConstants.mediumSpacing),
             Text(
               '— ${quote.author}',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontStyle: FontStyle.italic,
-                color: theme.colorScheme.secondary,
+                color: theme.colorScheme.onPrimaryContainer,
               ),
               textAlign: TextAlign.right,
             ),

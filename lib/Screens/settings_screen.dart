@@ -228,7 +228,15 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      final int newDuration = currentMinutes * 60 + currentRemainingSeconds;
+                      int newDuration = currentMinutes * 60 + currentRemainingSeconds;
+
+                      if (newDuration < 1) {
+                        newDuration = 1;
+                        ScaffoldMessenger.of(
+                          context,
+                        ).showSnackBar(const SnackBar(content: Text('Minimum duration is 1 second')));
+                      }
+
                       ref
                           .read(settingsProvider.notifier)
                           .updateSettings(settings.copyWith(meditationDuration: newDuration));

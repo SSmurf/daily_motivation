@@ -42,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
               const Spacer(),
               QuoteDisplay(quoteState: quoteState),
               const Spacer(),
+              const Spacer(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

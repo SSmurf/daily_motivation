@@ -17,7 +17,7 @@ class AboutAppScreen extends StatelessWidget {
           onPressed: () => Navigator.pop(context),
         ),
         // backgroundColor: Theme.of(context).colorScheme.surface,
-        // surfaceTintColor: Theme.of(context).colorScheme.surface,
+        surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,
       ),
       body: SingleChildScrollView(
         child: Padding(

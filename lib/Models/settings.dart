@@ -6,13 +6,18 @@ class Settings {
   final bool notificationsEnabled;
   final int? meditationDuration;
   Settings({
-    this.darkMode = false,
+    this.darkMode = true,
     this.quoteCategory = QuoteCategory.any,
     this.notificationsEnabled = true,
     this.meditationDuration,
   });
 
-  Settings copyWith({bool? darkMode, QuoteCategory? quoteCategory, bool? notificationsEnabled, int? meditationDuration}) {
+  Settings copyWith({
+    bool? darkMode,
+    QuoteCategory? quoteCategory,
+    bool? notificationsEnabled,
+    int? meditationDuration,
+  }) {
     return Settings(
       darkMode: darkMode ?? this.darkMode,
       quoteCategory: quoteCategory ?? this.quoteCategory,
@@ -32,7 +37,7 @@ class Settings {
 
   factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
-      darkMode: json['darkMode'] ?? false,
+      darkMode: json['darkMode'] ?? true,
       quoteCategory: QuoteCategory.values[json['quoteCategory'] ?? 4],
       notificationsEnabled: json['notificationsEnabled'] ?? true,
       meditationDuration: json['meditationDuration'] ?? 60,

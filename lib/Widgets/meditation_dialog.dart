@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:daily_motivation/Utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:vibration/vibration.dart';
 
 class MeditationDialog extends StatefulWidget {
   final int duration; // in seconds
@@ -24,12 +25,15 @@ class _MeditationDialogState extends State<MeditationDialog> {
   }
 
   void _startTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) async {
       if (_remainingSeconds == 0) {
         setState(() {
           _completed = true;
         });
         _timer?.cancel();
+        if (await Vibration.hasVibrator()) {
+          Vibration.vibrate(duration: 500);
+        }
       } else {
         setState(() {
           _remainingSeconds--;

@@ -91,6 +91,7 @@ class SettingsScreen extends ConsumerWidget {
   void _showCategoryPicker(BuildContext context, WidgetRef ref, Settings settings) {
     showModalBottomSheet(
       context: context,
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (context) {
         return SafeArea(
@@ -98,10 +99,14 @@ class SettingsScreen extends ConsumerWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text('Select Quote Category', style: Theme.of(context).textTheme.titleLarge),
+                padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
+                child: Text(
+                  'Select Quote Category',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                ),
               ),
-              const Divider(),
               _buildCategoryTile(context, ref, 'Any Category', QuoteCategory.any, settings.quoteCategory),
               _buildCategoryTile(
                 context,
@@ -166,7 +171,7 @@ class SettingsScreen extends ConsumerWidget {
                       "Set meditation duration",
                       style: Theme.of(
                         context,
-                      ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                      ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
                     ),
                   ),
                   Expanded(
@@ -179,7 +184,7 @@ class SettingsScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 "Minutes",
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                   color: Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),
@@ -209,7 +214,7 @@ class SettingsScreen extends ConsumerWidget {
                             children: [
                               Text(
                                 "Seconds",
-                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                                   color: Theme.of(context).colorScheme.onSurface,
                                 ),
                               ),

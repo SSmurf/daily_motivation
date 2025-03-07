@@ -139,7 +139,7 @@ class AppTheme {
       headlineMedium: GoogleFonts.poppins(fontSize: 28, fontWeight: FontWeight.bold),
       headlineSmall: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.w600),
       titleLarge: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold),
-      titleMedium: GoogleFonts.poppins(fontSize: 18),
+      titleMedium: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.w500),
       titleSmall: GoogleFonts.poppins(fontSize: 16),
       bodyLarge: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.w500),
       bodyMedium: GoogleFonts.poppins(fontSize: 14),
@@ -231,7 +231,7 @@ class AppTheme {
         labelStyle: TextStyle(color: lightSecondary700),
       ),
       bottomSheetTheme: BottomSheetThemeData(
-        backgroundColor: lightBackground100,
+        backgroundColor: lightBackground50,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
       ),
       floatingActionButtonTheme: FloatingActionButtonThemeData(

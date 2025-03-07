@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:feather_icons/feather_icons.dart';
 import '../providers/settings_provider.dart';
 import '../models/settings.dart';
+import 'about_app_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -71,6 +72,15 @@ class SettingsScreen extends ConsumerWidget {
               ).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             onTap: () => _showMeditationDurationPicker(context, ref, settings),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(FeatherIcons.info),
+            title: const Text('About'),
+            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
+            onTap: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutAppScreen()));
+            },
           ),
           const Divider(),
         ],

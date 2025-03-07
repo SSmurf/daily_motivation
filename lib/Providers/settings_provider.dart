@@ -15,10 +15,10 @@ class SettingsNotifier extends StateNotifier<Settings> {
   final StorageService _storageService;
 
   SettingsNotifier(this._storageService) : super(Settings()) {
-    _loadSettings();
+    loadSettings();
   }
 
-  Future<void> _loadSettings() async {
+  Future<void> loadSettings() async {
     final settings = await _storageService.getSettings();
     if (mounted) {
       state = settings;

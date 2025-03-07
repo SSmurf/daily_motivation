@@ -1,4 +1,3 @@
-// In your settings.dart (or similar)
 enum QuoteCategory { motivation, success, wisdom, happiness, any }
 
 class Settings {
@@ -38,5 +37,10 @@ class Settings {
       notificationsEnabled: json['notificationsEnabled'] ?? true,
       meditationDuration: json['meditationDuration'] ?? 60,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Settings(darkMode: $darkMode, quoteCategory: $quoteCategory, notificationsEnabled: $notificationsEnabled, meditationDuration: $meditationDuration)';
   }
 }

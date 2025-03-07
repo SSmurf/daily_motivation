@@ -47,9 +47,13 @@ class HomeScreen extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: ElevatedButton.icon(
-                      onPressed: () => _startMeditation(context, ref),
+                      onPressed: () async {
+                        await ref.read(settingsProvider.notifier).loadSettings();
+                        final meditationDuration = ref.read(settingsProvider).meditationDuration;
+                        _startMeditation(context, meditationDuration!);
+                      },
                       icon: const Icon(FeatherIcons.moon),
-                      label: Text('Meditate'),
+                      label: const Text('Meditate'),
                     ),
                   ),
                   const SizedBox(width: AppConstants.largeSpacing),
@@ -59,7 +63,7 @@ class HomeScreen extends ConsumerWidget {
                         ref.read(quoteProvider.notifier).fetchQuote();
                       },
                       icon: const Icon(FeatherIcons.refreshCw),
-                      label: Text('New Quote'),
+                      label: const Text('New Quote'),
                     ),
                   ),
                 ],
@@ -82,18 +86,14 @@ class HomeScreen extends ConsumerWidget {
 
     final quote = quoteState.value;
     final textToShare = '"${quote!.text}" — ${quote.author}';
-
     Share.share(textToShare, subject: 'Daily Motivation');
   }
 
-  void _startMeditation(BuildContext context, WidgetRef ref) {
-    // For this example, we assume your settingsProvider contains the meditation time in seconds.
-    // If not, default to 60 seconds.
-    final meditationDuration = ref.read(settingsProvider).meditationDuration ?? 60;
+  void _startMeditation(BuildContext context, int meditationDuration) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      barrierColor: Colors.black.withOpacity(0.7),
+      barrierColor: Colors.black.withValues(alpha: 0.7),
       builder: (_) => MeditationDialog(duration: meditationDuration),
     );
   }

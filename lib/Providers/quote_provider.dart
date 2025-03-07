@@ -42,7 +42,6 @@ class QuoteNotifier extends StateNotifier<AsyncValue<Quote>> {
     } catch (e, stack) {
       if (mounted) {
         state = AsyncValue.error(e, stack);
-        print(e);
       }
     }
   }

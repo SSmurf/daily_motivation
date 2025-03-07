@@ -151,13 +151,16 @@ class _FeatureItem extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: Theme.of(context).colorScheme.primary),
+          Icon(icon, size: 27, color: Theme.of(context).colorScheme.primary),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: onSurfaceColor)),
+                Text(
+                  title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: onSurfaceColor),
+                ),
                 const SizedBox(height: 4),
                 Text(
                   description,

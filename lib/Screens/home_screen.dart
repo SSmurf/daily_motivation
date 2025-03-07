@@ -50,8 +50,8 @@ class HomeScreen extends ConsumerWidget {
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         await ref.read(settingsProvider.notifier).loadSettings();
-                        final meditationDuration = ref.read(settingsProvider).meditationDuration;
-                        _startMeditation(context, meditationDuration!);
+                        final meditationDuration = ref.read(settingsProvider).meditationDuration ?? 60;
+                        _startMeditation(context, meditationDuration);
                       },
                       icon: const Icon(FeatherIcons.moon),
                       label: const Text('Meditate'),

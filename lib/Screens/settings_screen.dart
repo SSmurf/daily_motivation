@@ -66,7 +66,9 @@ class SettingsScreen extends ConsumerWidget {
             title: const Text('Meditation duration'),
             trailing: Text(
               _formatDuration(settings.meditationDuration ?? 60),
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
             ),
             onTap: () => _showMeditationDurationPicker(context, ref, settings),
           ),
@@ -150,7 +152,12 @@ class SettingsScreen extends ConsumerWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Text("Set meditation duration", style: Theme.of(context).textTheme.headlineSmall),
+                    child: Text(
+                      "Set meditation duration",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineSmall!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    ),
                   ),
                   Expanded(
                     child: Row(
@@ -160,7 +167,12 @@ class SettingsScreen extends ConsumerWidget {
                         Expanded(
                           child: Column(
                             children: [
-                              const Text("Minutes"),
+                              Text(
+                                "Minutes",
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
                               Expanded(
                                 child: CupertinoPicker(
                                   scrollController: FixedExtentScrollController(
@@ -185,7 +197,12 @@ class SettingsScreen extends ConsumerWidget {
                         Expanded(
                           child: Column(
                             children: [
-                              const Text("Seconds"),
+                              Text(
+                                "Seconds",
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                  color: Theme.of(context).colorScheme.onSurface,
+                                ),
+                              ),
                               Expanded(
                                 child: CupertinoPicker(
                                   scrollController: FixedExtentScrollController(

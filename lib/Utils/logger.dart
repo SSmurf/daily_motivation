@@ -3,9 +3,7 @@ import 'flavor.dart';
 
 class AppLogger {
   static void log(String message, {bool forceLog = false}) {
-    if (FlavorConfig.isDevelopment || forceLog) {
-      debugPrint(message);
-    }
+    debugPrint(message);
   }
 
   static void info(String message) {

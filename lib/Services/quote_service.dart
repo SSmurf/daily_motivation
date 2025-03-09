@@ -1,5 +1,5 @@
-// services/quote_service.dart
 import 'dart:convert';
+import 'package:daily_motivation/Utils/logger.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/io_client.dart';
 import 'dart:io';
@@ -17,17 +17,28 @@ class QuoteService {
 
   Future<Quote> getRandomQuote({String? category}) async {
     try {
-      final url = category != null ? '$baseUrl/random?tags=$category' : '$baseUrl/random';
+      final url = category != null ? '$baseUrl/random?tags=$category' : '$baseUrl/quotes/random';
+
+      AppLogger.api('Fetching quote from: $url');
 
       final response = await _client.get(Uri.parse(url));
 
+      AppLogger.api('Response status: ${response.statusCode}');
+      AppLogger.api('Response body: ${response.body}');
+
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
-        return Quote.fromJson(data);
+        AppLogger.api('Quote fetched successfully');
+
+        final quote = Quote.fromJson(data);
+        AppLogger.debug('Quote data: $quote');
+        return quote;
       } else {
+        AppLogger.error('Failed to load quote: ${response.statusCode}');
         throw Exception('Failed to load quote: ${response.statusCode}');
       }
     } catch (e) {
+      AppLogger.error('Error fetching quote: $e');
       throw Exception('Error fetching quote: $e');
     }
   }

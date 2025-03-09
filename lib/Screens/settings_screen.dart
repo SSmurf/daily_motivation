@@ -158,12 +158,6 @@ class SettingsScreen extends ConsumerWidget {
     int currentMinutes = currentSeconds ~/ 60;
     int currentRemainingSeconds = currentSeconds % 60;
 
-    // Use a large number for infinite scrolling.
-    const int infiniteItemCount = 600;
-    // Calculate initial scroll indexes in the middle of infinite list.
-    final int minutesInitialIndex = (infiniteItemCount ~/ 2) + currentMinutes;
-    final int secondsInitialIndex = (infiniteItemCount ~/ 2) + currentRemainingSeconds;
-
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -198,18 +192,17 @@ class SettingsScreen extends ConsumerWidget {
                               ),
                               Expanded(
                                 child: CupertinoPicker(
-                                  scrollController: FixedExtentScrollController(
-                                    initialItem: minutesInitialIndex,
-                                  ),
+                                  scrollController: FixedExtentScrollController(initialItem: currentMinutes),
                                   itemExtent: 32,
+                                  looping: true,
                                   onSelectedItemChanged: (int index) {
                                     setState(() {
-                                      currentMinutes = index % 60;
+                                      currentMinutes = index;
                                     });
                                   },
                                   children: List<Widget>.generate(
-                                    infiniteItemCount,
-                                    (int index) => Center(child: Text("${index % 60}")),
+                                    60,
+                                    (int index) => Center(child: Text("$index")),
                                   ),
                                 ),
                               ),
@@ -229,17 +222,18 @@ class SettingsScreen extends ConsumerWidget {
                               Expanded(
                                 child: CupertinoPicker(
                                   scrollController: FixedExtentScrollController(
-                                    initialItem: secondsInitialIndex,
+                                    initialItem: currentRemainingSeconds,
                                   ),
                                   itemExtent: 32,
+                                  looping: true,
                                   onSelectedItemChanged: (int index) {
                                     setState(() {
-                                      currentRemainingSeconds = index % 60;
+                                      currentRemainingSeconds = index;
                                     });
                                   },
                                   children: List<Widget>.generate(
-                                    infiniteItemCount,
-                                    (int index) => Center(child: Text("${index % 60}")),
+                                    60,
+                                    (int index) => Center(child: Text("$index")),
                                   ),
                                 ),
                               ),

@@ -10,13 +10,11 @@ class AboutAppScreen extends StatelessWidget {
     final onSurfaceColor = Theme.of(context).colorScheme.onSurface;
 
     return Scaffold(
-      // backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(FeatherIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
-        // backgroundColor: Theme.of(context).colorScheme.surface,
         surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,
       ),
       body: SingleChildScrollView(
@@ -71,6 +69,14 @@ class AboutAppScreen extends StatelessWidget {
                 icon: FeatherIcons.share2,
                 title: 'Share Quotes',
                 description: 'Share your favorite quotes with friends and family.',
+              ),
+              const SizedBox(height: 24),
+              Text("API", style: Theme.of(context).textTheme.titleLarge?.copyWith(color: onSurfaceColor)),
+              const SizedBox(height: 8),
+              const _FeatureItem(
+                icon: FeatherIcons.code,
+                title: 'Quotable API',
+                description: 'The quotes are fetched from the Quotable API.\ngithub.com/lukePeavey/quotable',
               ),
               const SizedBox(height: 24),
               Text('Made By', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: onSurfaceColor)),
@@ -157,10 +163,7 @@ class _FeatureItem extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(color: onSurfaceColor),
-                ),
+                Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(color: onSurfaceColor)),
                 const SizedBox(height: 4),
                 Text(
                   description,

@@ -64,7 +64,7 @@ class _MeditationDialogState extends State<MeditationDialog> {
         height: 350,
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: Theme.of(context).colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(16),
           ),
           padding: const EdgeInsets.symmetric(

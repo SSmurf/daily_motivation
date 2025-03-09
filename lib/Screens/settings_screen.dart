@@ -93,32 +93,40 @@ class SettingsScreen extends ConsumerWidget {
       context: context,
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      isScrollControlled: true,
       builder: (context) {
         return SafeArea(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
-                child: Text(
-                  'Select Quote Category',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+          child: Container(
+            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.75),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 16, left: 16, right: 16, bottom: 8),
+                  child: Text(
+                    'Select Quote Category',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                  ),
                 ),
-              ),
-              _buildCategoryTile(context, ref, 'Any Category', QuoteCategory.any, settings.quoteCategory),
-              _buildCategoryTile(
-                context,
-                ref,
-                'Motivation',
-                QuoteCategory.motivation,
-                settings.quoteCategory,
-              ),
-              _buildCategoryTile(context, ref, 'Success', QuoteCategory.success, settings.quoteCategory),
-              _buildCategoryTile(context, ref, 'Wisdom', QuoteCategory.wisdom, settings.quoteCategory),
-              _buildCategoryTile(context, ref, 'Happiness', QuoteCategory.happiness, settings.quoteCategory),
-            ],
+                const Divider(),
+                Expanded(
+                  child: ListView(
+                    children:
+                        QuoteCategory.values.map((category) {
+                          return _buildCategoryTile(
+                            context,
+                            ref,
+                            category.displayName,
+                            category,
+                            settings.quoteCategory,
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

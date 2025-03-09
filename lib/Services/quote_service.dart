@@ -17,7 +17,7 @@ class QuoteService {
 
   Future<Quote> getRandomQuote({String? category}) async {
     try {
-      final url = category != null ? '$baseUrl/random?tags=$category' : '$baseUrl/quotes/random';
+      final url = category != null ? '$baseUrl/quotes/random?tags=$category' : '$baseUrl/quotes/random';
 
       AppLogger.api('Fetching quote from: $url');
 

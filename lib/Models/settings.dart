@@ -1,4 +1,56 @@
-enum QuoteCategory { motivation, success, wisdom, happiness, any }
+enum QuoteCategory {
+  any,
+  business,
+  change,
+  character,
+  competition,
+  education,
+  famousQuotes,
+  film,
+  freedom,
+  friendship,
+  future,
+  happiness,
+  history,
+  humorous,
+  inspirational,
+  life,
+  love,
+  motivational,
+  philosophy,
+  politics,
+  science,
+  sports,
+  success,
+  technology,
+  virtue,
+  wisdom,
+}
+
+extension QuoteCategoryExtension on QuoteCategory {
+  String get slug {
+    switch (this) {
+      case QuoteCategory.any:
+        return '';
+      case QuoteCategory.famousQuotes:
+        return 'famous-quotes';
+      default:
+        return name.toLowerCase();
+    }
+  }
+
+  String get displayName {
+    switch (this) {
+      case QuoteCategory.any:
+        return 'Any Category';
+      case QuoteCategory.famousQuotes:
+        return 'Famous Quotes';
+      default:
+        return name.substring(0, 1).toUpperCase() +
+            name.substring(1).replaceAllMapped(RegExp(r'[A-Z]'), (match) => ' ${match.group(0)}');
+    }
+  }
+}
 
 class Settings {
   final bool darkMode;

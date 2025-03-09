@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import 'flavor.dart';
 
 class AppLogger {
   static void log(String message, {bool forceLog = false}) {

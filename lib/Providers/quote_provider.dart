@@ -1,4 +1,3 @@
-// providers/quote_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/quote.dart';
 import '../services/quote_service.dart';

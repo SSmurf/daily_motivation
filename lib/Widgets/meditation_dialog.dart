@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:vibration/vibration.dart';
 
 class MeditationDialog extends StatefulWidget {
-  final int duration; // in seconds
+  final int duration;
 
   const MeditationDialog({super.key, required this.duration});
 

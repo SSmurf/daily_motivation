@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:feather_icons/feather_icons.dart';
 
 class AppConstants {
-  // App Info
   static const String appName = 'Daily Motivation';
   static const String appVersion = '1.0.0';
   
-  // Icons
   static const IconData refreshIcon = FeatherIcons.refreshCw;
   static const IconData settingsIcon = FeatherIcons.settings;
   static const IconData themeIcon = FeatherIcons.moon;
@@ -14,23 +12,19 @@ class AppConstants {
   static const IconData categoryIcon = FeatherIcons.tag;
   static const IconData backIcon = FeatherIcons.arrowLeft;
   
-  // Animation Durations
   static const Duration shortAnimationDuration = Duration(milliseconds: 200);
   static const Duration mediumAnimationDuration = Duration(milliseconds: 400);
   static const Duration longAnimationDuration = Duration(milliseconds: 800);
   
-  // Spacing
   static const double smallSpacing = 8.0;
   static const double mediumSpacing = 16.0;
   static const double largeSpacing = 24.0;
   static const double extraLargeSpacing = 32.0;
   
-  // Border Radius
   static final BorderRadius smallBorderRadius = BorderRadius.circular(8.0);
   static final BorderRadius mediumBorderRadius = BorderRadius.circular(16.0);
   static final BorderRadius largeBorderRadius = BorderRadius.circular(24.0);
   
-  // Fallback Quotes
   static final List<Map<String, String>> fallbackQuotes = [
     {
       "text": "The only way to do great work is to love what you do.",

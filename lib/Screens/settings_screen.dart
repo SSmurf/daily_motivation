@@ -29,6 +29,7 @@ class SettingsScreen extends ConsumerWidget {
           icon: const Icon(FeatherIcons.arrowLeft),
           onPressed: () => Navigator.pop(context),
         ),
+        surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,
       ),
       body: ListView(
         children: [
@@ -153,7 +154,6 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showMeditationDurationPicker(BuildContext context, WidgetRef ref, Settings settings) {
-    // Convert stored duration from seconds to minutes and seconds.
     final int currentSeconds = settings.meditationDuration ?? 60;
     int currentMinutes = currentSeconds ~/ 60;
     int currentRemainingSeconds = currentSeconds % 60;
@@ -180,7 +180,6 @@ class SettingsScreen extends ConsumerWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Minutes Picker
                         Expanded(
                           child: Column(
                             children: [
@@ -209,7 +208,6 @@ class SettingsScreen extends ConsumerWidget {
                             ],
                           ),
                         ),
-                        // Seconds Picker
                         Expanded(
                           child: Column(
                             children: [

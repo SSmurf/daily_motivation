@@ -47,7 +47,6 @@ class NotificationService {
     final now = DateTime.now();
     final scheduledDate = DateTime(now.year, now.month, now.day, hour, minute);
 
-    // If the time has already passed today, schedule for tomorrow
     final effectiveDate =
         scheduledDate.isBefore(now) ? scheduledDate.add(const Duration(days: 1)) : scheduledDate;
 

@@ -24,7 +24,6 @@ class QuoteDisplay extends StatelessWidget {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: AppConstants.mediumBorderRadius),
-      // color: theme.colorScheme.primaryContainer,
       color: theme.colorScheme.surfaceContainerHighest,
       child: Padding(
         padding: const EdgeInsets.all(AppConstants.largeSpacing),

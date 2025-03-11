@@ -1,3 +1,4 @@
+import 'package:daily_motivation/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,60 +32,62 @@ class SettingsScreen extends ConsumerWidget {
         ),
         surfaceTintColor: Theme.of(context).colorScheme.surfaceDim,
       ),
-      body: ListView(
-        children: [
-          ListTile(
-            leading: const Icon(FeatherIcons.moon),
-            title: const Text('Dark Mode'),
-            trailing: Switch(
-              value: settings.darkMode,
-              onChanged: (value) {
-                ref.read(settingsProvider.notifier).toggleDarkMode();
-              },
+      body: SafeArea(
+        child: ListView(
+          children: [
+            ListTile(
+              leading: const Icon(FeatherIcons.moon),
+              title: const Text('Dark Mode'),
+              trailing: Switch(
+                value: settings.darkMode,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).toggleDarkMode();
+                },
+              ),
             ),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(FeatherIcons.bell),
-            title: const Text('Notifications'),
-            trailing: Switch(
-              value: settings.notificationsEnabled,
-              onChanged: (value) {
-                ref.read(settingsProvider.notifier).toggleNotifications();
-              },
+            const Divider(),
+            ListTile(
+              leading: const Icon(FeatherIcons.bell),
+              title: const Text('Notifications'),
+              trailing: Switch(
+                value: settings.notificationsEnabled,
+                onChanged: (value) {
+                  ref.read(settingsProvider.notifier).toggleNotifications();
+                },
+              ),
             ),
-          ),
 
-          const Divider(),
-          ListTile(
-            leading: const Icon(FeatherIcons.tag),
-            title: const Text('Quote category'),
-            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
-            onTap: () => _showCategoryPicker(context, ref, settings),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(FeatherIcons.clock),
-            title: const Text('Meditation duration'),
-            trailing: Text(
-              _formatDuration(settings.meditationDuration ?? 60),
-              style: Theme.of(
-                context,
-              ).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+            const Divider(),
+            ListTile(
+              leading: const Icon(FeatherIcons.tag),
+              title: const Text('Quote category'),
+              trailing: const Icon(FeatherIcons.chevronRight, size: 20),
+              onTap: () => _showCategoryPicker(context, ref, settings),
             ),
-            onTap: () => _showMeditationDurationPicker(context, ref, settings),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(FeatherIcons.info),
-            title: const Text('About'),
-            trailing: const Icon(FeatherIcons.chevronRight, size: 20),
-            onTap: () {
-              Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutAppScreen()));
-            },
-          ),
-          const Divider(),
-        ],
+            const Divider(),
+            ListTile(
+              leading: const Icon(FeatherIcons.clock),
+              title: const Text('Meditation duration'),
+              trailing: Text(
+                _formatDuration(settings.meditationDuration ?? 60),
+                style: Theme.of(
+                  context,
+                ).textTheme.bodyMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+              ),
+              onTap: () => _showMeditationDurationPicker(context, ref, settings),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(FeatherIcons.info),
+              title: const Text('About'),
+              trailing: const Icon(FeatherIcons.chevronRight, size: 20),
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => const AboutAppScreen()));
+              },
+            ),
+            const Divider(),
+          ],
+        ),
       ),
     );
   }
@@ -241,6 +244,7 @@ class SettingsScreen extends ConsumerWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: AppConstants.mediumSpacing),
                   ElevatedButton(
                     onPressed: () {
                       int newDuration = currentMinutes * 60 + currentRemainingSeconds;
@@ -259,7 +263,7 @@ class SettingsScreen extends ConsumerWidget {
                     },
                     child: const Text("Save"),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppConstants.largeSpacing),
                 ],
               ),
             );

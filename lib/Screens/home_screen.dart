@@ -33,44 +33,48 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(AppConstants.largeSpacing),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Spacer(),
-              QuoteDisplay(quoteState: quoteState),
-              const Spacer(),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        await ref.read(settingsProvider.notifier).loadSettings();
-                        final meditationDuration = ref.read(settingsProvider).meditationDuration ?? 60;
-                        _startMeditation(context, meditationDuration);
-                      },
-                      icon: const Icon(FeatherIcons.moon),
-                      label: const Text('Meditate'),
+      body: SafeArea(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppConstants.mediumSpacing,
+              vertical: AppConstants.largeSpacing,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Spacer(),
+                QuoteDisplay(quoteState: quoteState),
+                const Spacer(),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () async {
+                          await ref.read(settingsProvider.notifier).loadSettings();
+                          final meditationDuration = ref.read(settingsProvider).meditationDuration ?? 60;
+                          _startMeditation(context, meditationDuration);
+                        },
+                        icon: const Icon(FeatherIcons.moon),
+                        label: const Text('Meditate'),
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: AppConstants.largeSpacing),
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        ref.read(quoteProvider.notifier).fetchQuote();
-                      },
-                      icon: const Icon(FeatherIcons.refreshCw),
-                      label: const Text('New Quote'),
+                    const SizedBox(width: AppConstants.largeSpacing),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed: () {
+                          ref.read(quoteProvider.notifier).fetchQuote();
+                        },
+                        icon: const Icon(FeatherIcons.refreshCw),
+                        label: const Text('New Quote'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: AppConstants.extraLargeSpacing),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

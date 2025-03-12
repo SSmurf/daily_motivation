@@ -1,3 +1,5 @@
+import 'notification_time.dart';
+
 enum QuoteCategory {
   any,
   business,
@@ -57,11 +59,14 @@ class Settings {
   final QuoteCategory quoteCategory;
   final bool notificationsEnabled;
   final int? meditationDuration;
+  final List<NotificationTime> notificationTimes;
+
   Settings({
     this.darkMode = true,
     this.quoteCategory = QuoteCategory.any,
     this.notificationsEnabled = true,
     this.meditationDuration,
+    this.notificationTimes = const [],
   });
 
   Settings copyWith({
@@ -69,12 +74,14 @@ class Settings {
     QuoteCategory? quoteCategory,
     bool? notificationsEnabled,
     int? meditationDuration,
+    List<NotificationTime>? notificationTimes,
   }) {
     return Settings(
       darkMode: darkMode ?? this.darkMode,
       quoteCategory: quoteCategory ?? this.quoteCategory,
       notificationsEnabled: notificationsEnabled ?? this.notificationsEnabled,
       meditationDuration: meditationDuration ?? this.meditationDuration,
+      notificationTimes: notificationTimes ?? this.notificationTimes,
     );
   }
 
@@ -84,20 +91,27 @@ class Settings {
       'quoteCategory': quoteCategory.index,
       'notificationsEnabled': notificationsEnabled,
       'meditationDuration': meditationDuration,
+      'notificationTimes': notificationTimes.map((e) => e.toJson()).toList(),
     };
   }
 
   factory Settings.fromJson(Map<String, dynamic> json) {
     return Settings(
       darkMode: json['darkMode'] ?? true,
-      quoteCategory: QuoteCategory.values[json['quoteCategory'] ?? 4],
+      quoteCategory: QuoteCategory.values[json['quoteCategory'] ?? 0],
       notificationsEnabled: json['notificationsEnabled'] ?? true,
       meditationDuration: json['meditationDuration'] ?? 60,
+      notificationTimes:
+          json['notificationTimes'] != null
+              ? List<NotificationTime>.from(
+                (json['notificationTimes'] as List).map((e) => NotificationTime.fromJson(e)),
+              )
+              : const [],
     );
   }
 
   @override
   String toString() {
-    return 'Settings(darkMode: $darkMode, quoteCategory: $quoteCategory, notificationsEnabled: $notificationsEnabled, meditationDuration: $meditationDuration)';
+    return 'Settings(darkMode: $darkMode, quoteCategory: $quoteCategory, notificationsEnabled: $notificationsEnabled, meditationDuration: $meditationDuration, notificationTimes: $notificationTimes)';
   }
 }

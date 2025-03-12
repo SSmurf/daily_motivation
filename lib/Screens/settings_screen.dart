@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:feather_icons/feather_icons.dart';
+import '../models/notification_time.dart';
 import '../providers/settings_provider.dart';
 import '../models/settings.dart';
 import 'about_app_screen.dart';
@@ -23,6 +24,7 @@ class SettingsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final settings = ref.watch(settingsProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -56,7 +58,18 @@ class SettingsScreen extends ConsumerWidget {
                 },
               ),
             ),
-
+            const Divider(),
+            ListTile(
+              leading: const Icon(FeatherIcons.clock),
+              title: const Text('Notification Times'),
+              subtitle: Text(
+                settings.notificationTimes.isEmpty
+                    ? 'No times selected'
+                    : settings.notificationTimes.map((time) => time.toString()).join(', '),
+              ),
+              trailing: const Icon(FeatherIcons.chevronRight, size: 20),
+              onTap: () => _showNotificationTimesPicker(context, ref, settings),
+            ),
             const Divider(),
             ListTile(
               leading: const Icon(FeatherIcons.tag),
@@ -265,6 +278,137 @@ class SettingsScreen extends ConsumerWidget {
                   ),
                   const SizedBox(height: AppConstants.largeSpacing),
                 ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showNotificationTimesPicker(BuildContext context, WidgetRef ref, Settings settings) {
+    List<NotificationTime> localTimes = settings.notificationTimes.toList();
+
+    Future<TimeOfDay?> pickCupertinoTime() async {
+      TimeOfDay? pickedTime;
+      await showCupertinoModalPopup(
+        context: context,
+        builder: (BuildContext context) {
+          DateTime temporaryPickedDate = DateTime.now();
+          return Container(
+            height: 300,
+            color: Theme.of(context).scaffoldBackgroundColor,
+            child: Column(
+              children: [
+                Expanded(
+                  child: CupertinoDatePicker(
+                    mode: CupertinoDatePickerMode.time,
+                    initialDateTime: DateTime.now(),
+                    use24hFormat: true,
+                    onDateTimeChanged: (DateTime newDateTime) {
+                      temporaryPickedDate = newDateTime;
+                    },
+                  ),
+                ),
+                CupertinoButton(
+                  child: const Text('Done'),
+                  onPressed: () {
+                    pickedTime = TimeOfDay(
+                      hour: temporaryPickedDate.hour,
+                      minute: temporaryPickedDate.minute,
+                    );
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+      return pickedTime;
+    }
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      isScrollControlled: true,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Padding(
+              padding: MediaQuery.of(context).viewInsets.add(const EdgeInsets.all(16)),
+              child: SizedBox(
+                height: 400,
+                child: Column(
+                  children: [
+                    Text(
+                      'Notification Times',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.titleMedium!.copyWith(color: Theme.of(context).colorScheme.onSurface),
+                    ),
+                    const Divider(),
+                    Expanded(
+                      child:
+                          localTimes.isEmpty
+                              ? Center(
+                                child: Text(
+                                  'No times selected',
+                                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  ),
+                                ),
+                              )
+                              : ListView.builder(
+                                itemCount: localTimes.length,
+                                itemBuilder: (context, index) {
+                                  final time = localTimes[index];
+                                  return ListTile(
+                                    title: Text(time.toString()),
+                                    trailing: IconButton(
+                                      icon: const Icon(FeatherIcons.trash2),
+                                      onPressed: () {
+                                        setState(() {
+                                          localTimes.removeAt(index);
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                              ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        final pickedTime = await pickCupertinoTime();
+                        if (pickedTime != null) {
+                          setState(() {
+                            localTimes.add(
+                              NotificationTime(hour: pickedTime.hour, minute: pickedTime.minute),
+                            );
+                            localTimes.sort((a, b) {
+                              if (a.hour == b.hour) {
+                                return a.minute.compareTo(b.minute);
+                              }
+                              return a.hour.compareTo(b.hour);
+                            });
+                          });
+                        }
+                      },
+                      child: const Text('Add Time'),
+                    ),
+                    const SizedBox(height: AppConstants.mediumSpacing),
+                    ElevatedButton(
+                      onPressed: () {
+                        ref
+                            .read(settingsProvider.notifier)
+                            .updateSettings(settings.copyWith(notificationTimes: localTimes));
+                        Navigator.pop(context);
+                      },
+                      child: const Text('Save Times'),
+                    ),
+                  ],
+                ),
               ),
             );
           },

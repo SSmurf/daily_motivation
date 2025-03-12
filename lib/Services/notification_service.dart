@@ -4,7 +4,6 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/notification_time.dart';
 import 'quote_service.dart';
-import 'dart:math';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -16,7 +15,14 @@ class NotificationService {
       '@mipmap/ic_launcher',
     );
 
-    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings();
+    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+      defaultPresentAlert: true,
+      defaultPresentBadge: true,
+      defaultPresentSound: true,
+    );
 
     const InitializationSettings initializationSettings = InitializationSettings(
       android: initializationSettingsAndroid,
@@ -47,7 +53,6 @@ class NotificationService {
     final quoteService = QuoteService();
 
     try {
-      // Fetch once with the same number of quotes as notifications.
       final quotes = await quoteService.getRandomQuotes(limit: times.length);
 
       for (int i = 0; i < times.length; i++) {
@@ -57,7 +62,6 @@ class NotificationService {
         final effectiveDate =
             scheduledDate.isBefore(now) ? scheduledDate.add(const Duration(days: 1)) : scheduledDate;
 
-        // Use the corresponding quote from the fetched list.
         final notificationBody = quotes[i % quotes.length].text;
         debugPrint(
           "Scheduling notification $i at $effectiveDate for time: $time with quote: $notificationBody",
@@ -86,6 +90,7 @@ class NotificationService {
       channelDescription: 'Debug notifications',
       importance: Importance.max,
     );
+
     const NotificationDetails notificationDetails = NotificationDetails(
       android: androidDetails,
       iOS: DarwinNotificationDetails(),

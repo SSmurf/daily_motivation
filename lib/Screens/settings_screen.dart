@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:daily_motivation/utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
@@ -288,7 +290,6 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showNotificationTimesPicker(BuildContext context, WidgetRef ref, Settings settings) {
-    // Explicitly convert to a List<NotificationTime>
     List<NotificationTime> localTimes = settings.notificationTimes.toList();
 
     Future<TimeOfDay?> pickCupertinoTime() async {
@@ -296,7 +297,7 @@ class SettingsScreen extends ConsumerWidget {
       await showCupertinoModalPopup(
         context: context,
         builder: (BuildContext context) {
-          DateTime temporaryPickedDate = DateTime.now();
+          DateTime temporaryPickedDate = DateTime.now().add(const Duration(minutes: 1));
           return Container(
             height: 300,
             color: Theme.of(context).scaffoldBackgroundColor,
@@ -305,7 +306,7 @@ class SettingsScreen extends ConsumerWidget {
                 Expanded(
                   child: CupertinoDatePicker(
                     mode: CupertinoDatePickerMode.time,
-                    initialDateTime: DateTime.now(),
+                    initialDateTime: DateTime.now().add(const Duration(minutes: 1)),
                     use24hFormat: true,
                     onDateTimeChanged: (DateTime newDateTime) {
                       temporaryPickedDate = newDateTime;
@@ -402,22 +403,36 @@ class SettingsScreen extends ConsumerWidget {
                     const SizedBox(height: AppConstants.mediumSpacing),
                     ElevatedButton(
                       onPressed: () async {
-                        ref
-                            .read(settingsProvider.notifier)
-                            .updateSettings(settings.copyWith(notificationTimes: localTimes));
-                        debugPrint("Saved notification times: $localTimes");
-
-                        final notificationService = NotificationService();
-                        await notificationService.initialize();
-                        await notificationService.scheduleDailyNotifications(
-                          enabled: settings.notificationsEnabled,
-                          times: localTimes,
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return const Center(child: CircularProgressIndicator());
+                          },
                         );
-                        debugPrint("Scheduled daily notifications for times: $localTimes");
 
-                        await notificationService.sendDebugNotification();
+                        try {
+                          ref
+                              .read(settingsProvider.notifier)
+                              .updateSettings(settings.copyWith(notificationTimes: localTimes));
+                          debugPrint("Saved notification times: $localTimes");
 
-                        Navigator.pop(context);
+                          final notificationService = NotificationService();
+                          await notificationService.initialize();
+                          await notificationService.scheduleDailyNotifications(
+                            enabled: settings.notificationsEnabled,
+                            times: localTimes,
+                          );
+                          debugPrint("Scheduled daily notifications for times: $localTimes");
+
+                          await notificationService.sendDebugNotification();
+
+                          Navigator.pop(context);
+                          Navigator.pop(context);
+                        } catch (e) {
+                          Navigator.pop(context);
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error: $e')));
+                        }
                       },
                       child: const Text('Save Times'),
                     ),

@@ -12,11 +12,11 @@ class NotificationService {
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
 
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
+    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
 
-    const DarwinInitializationSettings initializationSettingsIOS =
-        DarwinInitializationSettings(
+    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
       defaultPresentAlert: true,
       defaultPresentBadge: true,
       defaultPresentSound: true,
@@ -56,33 +56,54 @@ class NotificationService {
     );
 
     final quoteService = QuoteService();
+    const int daysToSchedule = 14;
+    final int totalNotifications = daysToSchedule * times.length;
 
     try {
-      final quotes = await quoteService.getRandomQuotes(limit: times.length);
+      // Fetch a batch of quotes for all notifications.
+      final quotes = await quoteService.getRandomQuotes(limit: totalNotifications);
 
-      for (int i = 0; i < times.length; i++) {
-        final time = times[i];
-        final now = DateTime.now();
-        final scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-        final effectiveDate = scheduledDate.isBefore(now)
-            ? scheduledDate.add(const Duration(days: 1))
-            : scheduledDate;
+      for (int dayOffset = 0; dayOffset < daysToSchedule; dayOffset++) {
+        for (int i = 0; i < times.length; i++) {
+          final time = times[i];
+          final now = DateTime.now();
+          // Base date for this day.
+          DateTime scheduledBase = DateTime(now.year, now.month, now.day).add(Duration(days: dayOffset));
 
-        final notificationBody = quotes[i % quotes.length].text;
-        debugPrint(
-          "Scheduling notification $i at $effectiveDate for time: $time with quote: $notificationBody",
-        );
+          // Construct notification time for this day and slot.
+          DateTime notificationDate = DateTime(
+            scheduledBase.year,
+            scheduledBase.month,
+            scheduledBase.day,
+            time.hour,
+            time.minute,
+          );
 
-        await _notificationsPlugin.zonedSchedule(
-          i,
-          'Daily Motivation',
-          notificationBody,
-          tz.TZDateTime.from(effectiveDate, tz.local),
-          NotificationDetails(android: androidDetails, iOS: const DarwinNotificationDetails()),
-          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-          matchDateTimeComponents: DateTimeComponents.time,
-        );
+          // For dayOffset == 0, if the time has already passed, schedule it for tomorrow.
+          final effectiveDate =
+              (dayOffset == 0 && notificationDate.isBefore(now))
+                  ? notificationDate.add(const Duration(days: 1))
+                  : notificationDate;
+
+          // Compute unique quote index and notification ID.
+          final int quoteIndex = dayOffset * times.length + i;
+          final notificationBody = quotes[quoteIndex % quotes.length].text;
+          final notificationId = dayOffset * 100 + i;
+
+          debugPrint(
+            "Scheduling notification ID $notificationId at $effectiveDate with quote: $notificationBody",
+          );
+
+          await _notificationsPlugin.zonedSchedule(
+            notificationId,
+            'Daily Motivation',
+            notificationBody,
+            tz.TZDateTime.from(effectiveDate, tz.local),
+            NotificationDetails(android: androidDetails, iOS: const DarwinNotificationDetails()),
+            androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+            uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          );
+        }
       }
     } catch (e) {
       debugPrint("Error fetching quotes for notifications: $e");

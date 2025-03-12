@@ -60,17 +60,14 @@ class NotificationService {
     final int totalNotifications = daysToSchedule * times.length;
 
     try {
-      // Fetch a batch of quotes for all notifications.
       final quotes = await quoteService.getRandomQuotes(limit: totalNotifications);
 
       for (int dayOffset = 0; dayOffset < daysToSchedule; dayOffset++) {
         for (int i = 0; i < times.length; i++) {
           final time = times[i];
           final now = DateTime.now();
-          // Base date for this day.
           DateTime scheduledBase = DateTime(now.year, now.month, now.day).add(Duration(days: dayOffset));
 
-          // Construct notification time for this day and slot.
           DateTime notificationDate = DateTime(
             scheduledBase.year,
             scheduledBase.month,
@@ -79,13 +76,11 @@ class NotificationService {
             time.minute,
           );
 
-          // For dayOffset == 0, if the time has already passed, schedule it for tomorrow.
           final effectiveDate =
               (dayOffset == 0 && notificationDate.isBefore(now))
                   ? notificationDate.add(const Duration(days: 1))
                   : notificationDate;
 
-          // Compute unique quote index and notification ID.
           final int quoteIndex = dayOffset * times.length + i;
           final notificationBody = quotes[quoteIndex % quotes.length].text;
           final notificationId = dayOffset * 100 + i;

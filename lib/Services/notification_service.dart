@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/notification_time.dart';
@@ -11,14 +12,11 @@ class NotificationService {
   Future<void> initialize() async {
     tz_data.initializeTimeZones();
 
-    const AndroidInitializationSettings initializationSettingsAndroid = AndroidInitializationSettings(
-      '@mipmap/ic_launcher',
-    );
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
-    const DarwinInitializationSettings initializationSettingsIOS = DarwinInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
       defaultPresentAlert: true,
       defaultPresentBadge: true,
       defaultPresentSound: true,
@@ -31,6 +29,13 @@ class NotificationService {
 
     await _notificationsPlugin.initialize(initializationSettings);
     debugPrint("NotificationService initialized.");
+
+    final status = await Permission.notification.request();
+    if (status.isGranted) {
+      debugPrint("Notification permission granted.");
+    } else {
+      debugPrint("Notification permission not granted: $status");
+    }
   }
 
   Future<void> scheduleDailyNotifications({
@@ -59,8 +64,9 @@ class NotificationService {
         final time = times[i];
         final now = DateTime.now();
         final scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-        final effectiveDate =
-            scheduledDate.isBefore(now) ? scheduledDate.add(const Duration(days: 1)) : scheduledDate;
+        final effectiveDate = scheduledDate.isBefore(now)
+            ? scheduledDate.add(const Duration(days: 1))
+            : scheduledDate;
 
         final notificationBody = quotes[i % quotes.length].text;
         debugPrint(

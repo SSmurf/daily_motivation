@@ -6,6 +6,7 @@ import 'package:feather_icons/feather_icons.dart';
 import '../models/notification_time.dart';
 import '../providers/settings_provider.dart';
 import '../models/settings.dart';
+import '../services/notification_service.dart';
 import 'about_app_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
@@ -287,6 +288,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _showNotificationTimesPicker(BuildContext context, WidgetRef ref, Settings settings) {
+    // Explicitly convert to a List<NotificationTime>
     List<NotificationTime> localTimes = settings.notificationTimes.toList();
 
     Future<TimeOfDay?> pickCupertinoTime() async {
@@ -399,10 +401,22 @@ class SettingsScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppConstants.mediumSpacing),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         ref
                             .read(settingsProvider.notifier)
                             .updateSettings(settings.copyWith(notificationTimes: localTimes));
+                        debugPrint("Saved notification times: $localTimes");
+
+                        final notificationService = NotificationService();
+                        await notificationService.initialize();
+                        await notificationService.scheduleDailyNotifications(
+                          enabled: settings.notificationsEnabled,
+                          times: localTimes,
+                        );
+                        debugPrint("Scheduled daily notifications for times: $localTimes");
+
+                        await notificationService.sendDebugNotification();
+
                         Navigator.pop(context);
                       },
                       child: const Text('Save Times'),

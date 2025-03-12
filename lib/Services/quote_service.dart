@@ -29,7 +29,6 @@ class QuoteService {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         AppLogger.api('Quote fetched successfully');
-
         final quote = Quote.fromJson(data);
         AppLogger.debug('Quote data: $quote');
         return quote;
@@ -40,6 +39,32 @@ class QuoteService {
     } catch (e) {
       AppLogger.error('Error fetching quote: $e');
       throw Exception('Error fetching quote: $e');
+    }
+  }
+
+  Future<List<Quote>> getRandomQuotes({int limit = 3}) async {
+    try {
+      final url = '$baseUrl/quotes/random?limit=$limit';
+      AppLogger.api('Fetching random quotes from: $url');
+      final response = await _client.get(Uri.parse(url));
+      AppLogger.api('Response status: ${response.statusCode}');
+      AppLogger.api('Response body: ${response.body}');
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        if (data is List) {
+          AppLogger.api('Fetched ${data.length} quotes.');
+          return data.map<Quote>((json) => Quote.fromJson(json)).toList();
+        } else {
+          AppLogger.api('Fetched a single quote.');
+          return [Quote.fromJson(data)];
+        }
+      } else {
+        AppLogger.error('Failed to load quotes: ${response.statusCode}');
+        throw Exception('Failed to load quotes: ${response.statusCode}');
+      }
+    } catch (e) {
+      AppLogger.error('Error fetching quotes: $e');
+      throw Exception('Error fetching quotes: $e');
     }
   }
 

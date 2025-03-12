@@ -1,7 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:timezone/data/latest.dart' as tz_data;
 import '../models/notification_time.dart';
+import 'quote_service.dart';
+import 'dart:math';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -21,7 +24,7 @@ class NotificationService {
     );
 
     await _notificationsPlugin.initialize(initializationSettings);
-    print("NotificationService initialized.");
+    debugPrint("NotificationService initialized.");
   }
 
   Future<void> scheduleDailyNotifications({
@@ -30,7 +33,7 @@ class NotificationService {
   }) async {
     await cancelNotifications();
     if (!enabled || times.isEmpty) {
-      print("No notifications scheduled. Enabled: $enabled, Times count: ${times.length}");
+      debugPrint("No notifications scheduled. Enabled: $enabled, Times count: ${times.length}");
       return;
     }
 
@@ -41,35 +44,42 @@ class NotificationService {
       importance: Importance.high,
     );
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: DarwinNotificationDetails(),
-    );
+    final quoteService = QuoteService();
 
-    for (int i = 0; i < times.length; i++) {
-      final time = times[i];
-      final now = DateTime.now();
-      final scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
-      final effectiveDate =
-          scheduledDate.isBefore(now) ? scheduledDate.add(const Duration(days: 1)) : scheduledDate;
+    try {
+      // Fetch once with the same number of quotes as notifications.
+      final quotes = await quoteService.getRandomQuotes(limit: times.length);
 
-      print("Scheduling notification $i at $effectiveDate for time: $time");
+      for (int i = 0; i < times.length; i++) {
+        final time = times[i];
+        final now = DateTime.now();
+        final scheduledDate = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+        final effectiveDate =
+            scheduledDate.isBefore(now) ? scheduledDate.add(const Duration(days: 1)) : scheduledDate;
 
-      await _notificationsPlugin.zonedSchedule(
-        i,
-        'Daily Motivation',
-        'Your random quote is ready!',
-        tz.TZDateTime.from(effectiveDate, tz.local),
-        notificationDetails,
-        androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
-        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time,
-      );
+        // Use the corresponding quote from the fetched list.
+        final notificationBody = quotes[i % quotes.length].text;
+        debugPrint(
+          "Scheduling notification $i at $effectiveDate for time: $time with quote: $notificationBody",
+        );
+
+        await _notificationsPlugin.zonedSchedule(
+          i,
+          'Daily Motivation',
+          notificationBody,
+          tz.TZDateTime.from(effectiveDate, tz.local),
+          NotificationDetails(android: androidDetails, iOS: const DarwinNotificationDetails()),
+          androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+          uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+          matchDateTimeComponents: DateTimeComponents.time,
+        );
+      }
+    } catch (e) {
+      debugPrint("Error fetching quotes for notifications: $e");
     }
   }
 
   Future<void> sendDebugNotification() async {
-    // Sends an immediate notification for debug purposes.
     const AndroidNotificationDetails androidDetails = AndroidNotificationDetails(
       'debug_channel',
       'Debug Notifications',
@@ -86,11 +96,11 @@ class NotificationService {
       'This is a debug notification triggered on Save Times',
       notificationDetails,
     );
-    print("Debug notification sent.");
+    debugPrint("Debug notification sent.");
   }
 
   Future<void> cancelNotifications() async {
-    print("Cancelling all notifications.");
+    debugPrint("Cancelling all notifications.");
     await _notificationsPlugin.cancelAll();
   }
 }
